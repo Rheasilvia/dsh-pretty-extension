@@ -1,0 +1,5 @@
+# Insert the Pretty plugin into the DSH web profile. The package's dsh.client
+# declaration loads the browser half, which contributes the Settings section.
+- insert:
+    - id: ui-pretty
+      name: dsh-pretty-extension
