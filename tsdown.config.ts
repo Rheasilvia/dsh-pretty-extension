@@ -1,5 +1,6 @@
 /** Build the Host entry and DSH browser module as one publishable package. */
 import type { UserConfig } from 'tsdown'
+import { inlineCssModules } from './build/inline-css-modules.ts'
 
 const packageId = 'dsh-pretty-extension'
 
@@ -15,7 +16,7 @@ const host: UserConfig = {
   sourcemap: true,
   clean: false,
   deps: {
-    neverBundle: ['@deepseek-ai/cordis'],
+    neverBundle: ['@deepseek-ai/cordis', '@deepseek-ai/dsh-settings'],
   },
   outputOptions: {
     entryFileNames: 'index.js',
@@ -32,10 +33,15 @@ const client: UserConfig = {
   dts: false,
   sourcemap: true,
   clean: false,
+  plugins: [inlineCssModules(packageId)],
   deps: {
     neverBundle: [
       '@deepseek-ai/cordis',
+      '@deepseek-ai/dsh-client-runtime/client',
+      '@deepseek-ai/dsh-client-ui-primitives',
       '@deepseek-ai/dsh-client-ui-slots',
+      'react',
+      'react/jsx-runtime',
     ],
   },
   outputOptions: {

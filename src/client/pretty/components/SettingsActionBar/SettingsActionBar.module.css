@@ -1,0 +1,4 @@
+.bar { position: sticky; bottom: 0; z-index: 1; display: flex; gap: 12px; align-items: center; justify-content: space-between; min-height: 42px; padding: 12px 0 0; background: var(--dsw-alias-bg-layer-2); border-top: 1px solid var(--dsw-alias-border-l1); }
+.status { color: var(--dsw-alias-label-secondary); font-size: 11px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+@container (max-width: 460px) { .bar { position: static; align-items: stretch; flex-direction: column; } .actions { display: grid; grid-template-columns: 1fr 1fr; } .actions > :last-child { grid-column: 1 / -1; } }

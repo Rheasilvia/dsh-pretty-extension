@@ -1,7 +1,16 @@
-/** Host half of the Pretty plugin. UI behavior lives in the browser half. */
+import type { Context } from '@deepseek-ai/cordis'
+import { settingsNamespace } from '@deepseek-ai/dsh-settings'
+import { PRETTY_SETTINGS_NAMESPACE, PrettySettingsSchema } from './settings/pretty-settings.ts'
 
 /** Stable Cordis plugin name. */
 export const name = 'pretty'
 
-/** The initialization release has no Host-side behavior. */
-export function apply(): void {}
+export function apply(ctx: Context): void {
+  ctx.inject(['settings'], settingsCtx => {
+    settingsCtx.settings.register(
+      settingsNamespace(PRETTY_SETTINGS_NAMESPACE),
+      PrettySettingsSchema,
+      { applies: 'live' },
+    )
+  })
+}

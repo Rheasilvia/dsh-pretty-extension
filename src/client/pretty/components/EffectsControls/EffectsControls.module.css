@@ -1,0 +1,18 @@
+.group { min-width: 0; margin: 0; padding: 0; border: 0; }
+.legend { padding: 0 0 6px; color: var(--dsw-alias-label-primary); font-size: 14px; font-weight: 600; }
+.row { display: grid; grid-template-columns: minmax(150px, 1fr) auto; gap: 16px; align-items: center; min-height: 52px; color: var(--dsw-alias-label-primary); border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.copy { display: grid; gap: 3px; font-size: 13px; }
+.copy small { color: var(--dsw-alias-label-secondary); font-size: 11px; line-height: 1.45; }
+.switch { position: relative; width: 34px; height: 20px; }
+.switch input { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.switch > span { display: block; width: 100%; height: 100%; box-sizing: border-box; background: var(--dsw-alias-bg-layer-3); border: 1px solid var(--dsw-alias-border-l2); border-radius: 999px; transition: background-color 120ms ease; }
+.switch > span::after { content: ''; display: block; width: 14px; height: 14px; margin: 2px; background: var(--dsw-alias-label-secondary); border-radius: 50%; transition: transform 120ms ease; }
+.switch input:checked + span { background: var(--dsw-alias-brand-primary); border-color: transparent; }
+.switch input:checked + span::after { background: var(--dsw-alias-label-primary-foreground); transform: translateX(14px); }
+.switch input:focus-visible + span { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.rangeControl { display: grid; grid-template-columns: minmax(92px, 150px) 24px; gap: 10px; align-items: center; }
+.rangeControl input { accent-color: var(--dsw-alias-brand-primary); }
+.rangeControl input:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.rangeControl output { color: var(--dsw-alias-label-secondary); font: 12px var(--ds-font-family-code, ui-monospace, monospace); text-align: right; }
+@container (max-width: 420px) { .rangeRow { grid-template-columns: 1fr; gap: 8px; padding: 10px 0; } .rangeControl { grid-template-columns: 1fr 24px; } }
+@media (prefers-reduced-motion: reduce) { .switch > span, .switch > span::after { transition: none; } }
