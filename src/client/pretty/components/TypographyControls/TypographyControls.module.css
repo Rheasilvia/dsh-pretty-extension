@@ -6,6 +6,4 @@
 .catalogRow button:disabled { cursor: default; opacity: 0.45; }
 .catalogRow button:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
 .row { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(170px, 238px); gap: 16px; align-items: center; min-height: 44px; color: var(--dsw-alias-label-primary); font-size: 13px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
-.row select { width: 100%; height: 32px; padding: 0 30px 0 10px; color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-1); border: 1px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-md, 8px); }
-.row select:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
 @container (max-width: 420px) { .catalogRow { align-items: flex-start; flex-direction: column; gap: 8px; padding: 8px 0; } .row { grid-template-columns: 1fr; gap: 6px; padding: 9px 0; } }

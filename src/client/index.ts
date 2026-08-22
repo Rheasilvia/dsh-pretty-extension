@@ -11,6 +11,7 @@ import { DshSettingsAdapter } from './pretty/state/dsh-settings-adapter.ts'
 import { PrettySettingsController } from './pretty/state/pretty-settings-controller.ts'
 import { DshThemeAdapter } from './pretty/theme/dsh-theme-adapter.ts'
 import { createBrowserLocalFontCatalog } from './pretty/theme/local-font-catalog.ts'
+import './pretty/theme/SessionRowTheme.module.css'
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
@@ -39,6 +40,7 @@ export function apply(ctx: ClientContext): void {
     controller,
     fontCatalog,
     hooks: { pretty: controller.store },
+    initialMode: ctx.theme.getTheme().active.colorScheme,
     t,
   })
 

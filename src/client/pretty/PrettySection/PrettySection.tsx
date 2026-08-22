@@ -12,12 +12,14 @@ import { PaletteEditor } from '../components/PaletteEditor/PaletteEditor.tsx'
 import { TypographyControls } from '../components/TypographyControls/TypographyControls.tsx'
 import { EffectsControls } from '../components/EffectsControls/EffectsControls.tsx'
 import { SettingsActionBar } from '../components/SettingsActionBar/SettingsActionBar.tsx'
+import { PrettySelect } from '../components/PrettySelect/PrettySelect.tsx'
 import styles from './PrettySection.module.css'
 
 export interface PrettySectionInjected {
   controller: PrettySettingsController
   fontCatalog: LocalFontCatalog
   hooks: { pretty: PrettySettingsController['store'] }
+  initialMode: PaletteMode
   t: PrettyTranslate
 }
 
@@ -31,7 +33,7 @@ function Loading({ t }: { t: PrettyTranslate }) {
   )
 }
 
-function ReadonlyState({ t, reason, persisted }: { t: PrettyTranslate; reason: string; persisted: PrettyThemeConfig }) {
+function ReadonlyState({ t, reason, persisted, mode }: { t: PrettyTranslate; reason: string; persisted: PrettyThemeConfig; mode: PaletteMode }) {
   return (
     <section className={styles.section}>
       <header className={styles.header}><h1>{t('title')}</h1><p>{t('description')}</p></header>
@@ -39,18 +41,18 @@ function ReadonlyState({ t, reason, persisted }: { t: PrettyTranslate; reason: s
         <strong>{t('readonlyTitle')}</strong>
         <span>{t(reason === 'remote-memory' ? 'readonlyRemote' : 'readonlyUnavailable')}</span>
       </div>
-      <ThemePreview palette={persisted.dark} translucentSidebar={persisted.translucentSidebar} label={t('preview')} sidebarLabel={t('previewSidebar')} conversationLabel={t('previewConversation')} />
+      <ThemePreview palette={persisted[mode]} translucentSidebar={persisted.translucentSidebar} contrast={persisted.contrast} label={t('preview')} sidebarLabel={t('previewSidebar')} conversationLabel={t('previewConversation')} />
     </section>
   )
 }
 
-export function PrettySection({ controller, fontCatalog, usePretty, t }: PrettySectionProps) {
+export function PrettySection({ controller, fontCatalog, initialMode, usePretty, t }: PrettySectionProps) {
   const state = usePretty(snapshot => snapshot)
-  const [mode, setMode] = useState<PaletteMode>('dark')
+  const [mode, setMode] = useState<PaletteMode>(initialMode)
   const localFonts = useLocalFontFamilies(fontCatalog)
   useEffect(() => () => { controller.discard() }, [controller])
   if (state.status === 'loading') return <Loading t={t} />
-  if (state.status === 'readonly') return <ReadonlyState t={t} reason={state.reason} persisted={state.persisted} />
+  if (state.status === 'readonly') return <ReadonlyState t={t} reason={state.reason} persisted={state.persisted} mode={mode} />
 
   const disabled = state.saveStatus === 'saving' || state.saveStatus === 'conflict'
   const editorDisabled = disabled || !state.draft.enabled
@@ -109,22 +111,27 @@ export function PrettySection({ controller, fontCatalog, usePretty, t }: PrettyS
             <button key={value} type="button" aria-pressed={mode === value} onClick={() => setMode(value)}>{t(value)}</button>
           ))}
         </div>
-        <ThemePreview palette={palette} translucentSidebar={state.draft.translucentSidebar} label={`${t('preview')} — ${t(mode)}`} sidebarLabel={t('previewSidebar')} conversationLabel={t('previewConversation')} />
+        <ThemePreview palette={palette} translucentSidebar={state.draft.translucentSidebar} contrast={state.draft.contrast} label={`${t('preview')} — ${t(mode)}`} sidebarLabel={t('previewSidebar')} conversationLabel={t('previewConversation')} />
       </div>
 
-      <label className={styles.selectRow}>
+      <div className={styles.selectRow}>
         <span>{t('preset')}</span>
-        <select value={state.draft.preset} disabled={editorDisabled} onChange={event => {
-          const value = event.currentTarget.value
-          if (value !== 'custom') controller.selectPreset(value as typeof BUILTIN_PRESET_IDS[number])
-        }}>
-          {BUILTIN_PRESET_IDS.map(id => <option key={id} value={id}>{THEME_PRESETS[id].label}</option>)}
-          {state.draft.preset === 'custom' && <option value="custom">{t('custom')}</option>}
-          {(state.draft.preset === 'ocean' || state.draft.preset === 'forest') && (
-            <option value={state.draft.preset}>{t(state.draft.preset)} ({t('legacy')})</option>
-          )}
-        </select>
-      </label>
+        <PrettySelect
+          label={t('preset')}
+          value={state.draft.preset}
+          disabled={editorDisabled}
+          groups={[{ options: [
+            ...BUILTIN_PRESET_IDS.map(id => ({ value: id, label: THEME_PRESETS[id].label })),
+            ...(state.draft.preset === 'custom' ? [{ value: 'custom' as const, label: t('custom') }] : []),
+            ...((state.draft.preset === 'ocean' || state.draft.preset === 'forest')
+              ? [{ value: state.draft.preset, label: `${t(state.draft.preset)} (${t('legacy')})` }]
+              : []),
+          ] }]}
+          onChange={value => {
+            if (value !== 'custom') controller.selectPreset(value as typeof BUILTIN_PRESET_IDS[number])
+          }}
+        />
+      </div>
 
       <PaletteEditor legend={`${t('palette')} — ${t(mode)}`} palette={palette} labels={{ accent: t('accent'), background: t('background'), foreground: t('foreground'), sidebar: t('sidebar') }} errorMessage={t('colorError')} disabled={editorDisabled} onChange={(field, color) => controller.updatePalette(mode, field, color)} />
       <TypographyControls

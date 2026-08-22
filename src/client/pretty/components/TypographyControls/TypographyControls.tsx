@@ -1,6 +1,7 @@
 import {
   localFontFamily, toLocalFontId, type PrettyCodeFontId, type PrettyUiFontId,
 } from '../../../../settings/pretty-settings.ts'
+import { PrettySelect } from '../PrettySelect/PrettySelect.tsx'
 import styles from './TypographyControls.module.css'
 
 interface SelectOption<T extends string> { value: T; label: string }
@@ -40,32 +41,38 @@ export function TypographyControls(props: TypographyControlsProps) {
           <button type="button" disabled={props.loadingFonts} onClick={props.onLoadFonts}>{props.loadFontsLabel}</button>
         )}
       </div>
-      <label className={styles.row}>
+      <div className={styles.row}>
         <span>{props.uiLabel}</span>
-        <select value={props.uiFont} onChange={event => props.onUiFontChange(event.currentTarget.value as PrettyUiFontId)}>
-          <optgroup label={props.builtinGroupLabel}>
-            {props.uiOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </optgroup>
-          {families.length > 0 && (
-            <optgroup label={props.localGroupLabel}>
-              {families.map(family => <option key={family} value={toLocalFontId(family)}>{family}</option>)}
-            </optgroup>
-          )}
-        </select>
-      </label>
-      <label className={styles.row}>
+        <PrettySelect
+          label={props.uiLabel}
+          value={props.uiFont}
+          disabled={props.disabled}
+          groups={[
+            { label: props.builtinGroupLabel, options: props.uiOptions },
+            ...(families.length === 0 ? [] : [{
+              label: props.localGroupLabel,
+              options: families.map(family => ({ value: toLocalFontId(family), label: family })),
+            }]),
+          ]}
+          onChange={props.onUiFontChange}
+        />
+      </div>
+      <div className={styles.row}>
         <span>{props.codeLabel}</span>
-        <select value={props.codeFont} onChange={event => props.onCodeFontChange(event.currentTarget.value as PrettyCodeFontId)}>
-          <optgroup label={props.builtinGroupLabel}>
-            {props.codeOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </optgroup>
-          {families.length > 0 && (
-            <optgroup label={props.localGroupLabel}>
-              {families.map(family => <option key={family} value={toLocalFontId(family)}>{family}</option>)}
-            </optgroup>
-          )}
-        </select>
-      </label>
+        <PrettySelect
+          label={props.codeLabel}
+          value={props.codeFont}
+          disabled={props.disabled}
+          groups={[
+            { label: props.builtinGroupLabel, options: props.codeOptions },
+            ...(families.length === 0 ? [] : [{
+              label: props.localGroupLabel,
+              options: families.map(family => ({ value: toLocalFontId(family), label: family })),
+            }]),
+          ]}
+          onChange={props.onCodeFontChange}
+        />
+      </div>
     </fieldset>
   )
 }

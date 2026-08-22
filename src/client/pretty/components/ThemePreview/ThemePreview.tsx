@@ -1,24 +1,27 @@
 import type { PrettyPalette } from '../../../../settings/pretty-settings.ts'
-import { readableOnAccent } from '../../theme/color-contrast.ts'
+import { derivePreviewColors } from '../../theme/theme-tokens.ts'
 import styles from './ThemePreview.module.css'
 
 export interface ThemePreviewProps {
   palette: PrettyPalette
   translucentSidebar: boolean
+  contrast: number
   label: string
   sidebarLabel: string
   conversationLabel: string
 }
 
 export function ThemePreview({
-  palette, translucentSidebar, label, sidebarLabel, conversationLabel,
+  palette, translucentSidebar, contrast, label, sidebarLabel, conversationLabel,
 }: ThemePreviewProps) {
+  const colors = derivePreviewColors(palette, { translucentSidebar, contrast })
   const previewStyle = {
-    '--pretty-preview-bg': palette.background,
-    '--pretty-preview-fg': palette.foreground,
-    '--pretty-preview-accent': palette.accent,
-    '--pretty-preview-accent-fg': readableOnAccent(palette.accent),
-    '--pretty-preview-sidebar': translucentSidebar ? `${palette.sidebar}D1` : palette.sidebar,
+    '--pretty-preview-bg': colors.background,
+    '--pretty-preview-fg': colors.foreground,
+    '--pretty-preview-accent': colors.accent,
+    '--pretty-preview-accent-fg': colors.accentForeground,
+    '--pretty-preview-sidebar': colors.sidebar,
+    '--pretty-preview-sidebar-item': colors.sidebarItemSelected,
   } as React.CSSProperties
   return (
     <figure className={styles.preview} style={previewStyle} aria-label={label}>

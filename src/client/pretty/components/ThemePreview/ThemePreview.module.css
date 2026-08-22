@@ -25,7 +25,7 @@
 
 .previewLabel { font-size: 11px; opacity: 0.72; }
 .navItem { width: 72%; height: 7px; border-radius: 4px; background: currentColor; opacity: 0.16; }
-.navItemActive { width: 88%; height: 20px; opacity: 1; background: color-mix(in srgb, var(--pretty-preview-accent) 18%, transparent); }
+.navItemActive { width: 88%; height: 20px; opacity: 1; background: var(--pretty-preview-sidebar-item); }
 .message,
 .messageShort { height: 9px; border-radius: 4px; background: currentColor; opacity: 0.18; }
 .messageShort { width: 64%; }

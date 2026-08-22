@@ -43,7 +43,7 @@ function renderReady() {
     const state = useSyncExternalStore(controller.store.subscribe, controller.store.getSnapshot, controller.store.getSnapshot)
     return selector(state)
   }
-  const props = { close: () => {}, controller, fontCatalog, usePretty, t } as PrettySectionProps
+  const props = { close: () => {}, controller, fontCatalog, initialMode: 'light', usePretty, t } as PrettySectionProps
   const result = render(<PrettySection {...props} />)
   return { ...result, controller, fontCatalog, settings, theme }
 }
@@ -53,9 +53,12 @@ describe('PrettySection', () => {
     const { theme } = renderReady()
     expect(screen.getByRole('heading', { name: 'Pretty' })).toBeTruthy()
     fireEvent.click(screen.getByRole('switch', { name: /Enable Pretty theme/ }))
-    fireEvent.change(screen.getByLabelText('Preset'), { target: { value: 'lobster' } })
-    fireEvent.change(screen.getByLabelText('Interface font'), { target: { value: 'humanist' } })
+    fireEvent.click(screen.getByLabelText('Preset'))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Lobster' }))
+    fireEvent.keyDown(screen.getByLabelText('Interface font'), { key: 'ArrowDown' })
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Humanist Sans' }))
     fireEvent.change(screen.getByRole('slider', { name: /Interface layer strength/ }), { target: { value: '72' } })
+    expect(document.querySelector('select')).toBeNull()
     expect(theme.preview).toHaveBeenCalled()
     expect(screen.getByText('Unsaved changes')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Save and apply' }))
@@ -67,12 +70,12 @@ describe('PrettySection', () => {
   it('makes the disabled state explicit before customization can be edited', () => {
     const { theme } = renderReady()
     expect(screen.getByText('Pretty is currently off')).toBeTruthy()
-    expect((screen.getByLabelText('Preset') as HTMLSelectElement).disabled).toBe(true)
+    expect((screen.getByLabelText('Preset') as HTMLButtonElement).disabled).toBe(true)
     expect(screen.getByRole('button', { name: 'Save with Pretty off' }).hasAttribute('disabled')).toBe(true)
 
     fireEvent.click(screen.getByRole('button', { name: 'Enable and preview' }))
 
-    expect((screen.getByLabelText('Preset') as HTMLSelectElement).disabled).toBe(false)
+    expect((screen.getByLabelText('Preset') as HTMLButtonElement).disabled).toBe(false)
     expect(theme.preview).toHaveBeenLastCalledWith(expect.objectContaining({ enabled: true }))
     expect(screen.queryByText('Pretty is currently off')).toBeNull()
   })
@@ -84,7 +87,8 @@ describe('PrettySection', () => {
     await waitFor(() => expect(screen.getByText('2 system font families available.')).toBeTruthy())
     expect(fontCatalog.loadFamilies).toHaveBeenCalledOnce()
 
-    fireEvent.change(screen.getByLabelText('Interface font'), { target: { value: 'local:Avenir Next' } })
+    fireEvent.click(screen.getByLabelText('Interface font'))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Avenir Next' }))
     expect(theme.preview).toHaveBeenLastCalledWith(expect.objectContaining({ uiFont: 'local:Avenir Next' }))
   })
 

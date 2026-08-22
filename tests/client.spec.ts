@@ -14,7 +14,10 @@ describe('Pretty client plugin', () => {
         getSnapshot: () => ({ status: 'loading', value: undefined, base: undefined, user: undefined, revision: undefined, writable: false, mode: 'host' }),
         subscribe: () => () => {}, set: async () => {}, unset: async () => {},
       })) },
-      theme: { overrideTokens: vi.fn(() => () => {}) },
+      theme: {
+        getTheme: vi.fn(() => ({ active: { colorScheme: 'light' } })),
+        overrideTokens: vi.fn(() => () => {}),
+      },
       slots: { inject: injectSlot, register },
     } as unknown as ClientContext
 
@@ -27,5 +30,6 @@ describe('Pretty client plugin', () => {
     const options = register.mock.calls[0]![0] as Record<string, unknown>
     expect(options).toMatchObject({ name: 'settings.section', id: 'pretty', order: 100, inject: expect.any(Function) })
     expect((options.label as () => string)()).toBe('Pretty')
+    expect((options.inject as () => { initialMode: string })().initialMode).toBe('light')
   })
 })

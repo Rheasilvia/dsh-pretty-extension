@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- 让 Pretty 预览与真实 Sidebar session selected 状态共用主题 accent 派生的 active fill，并将其与中性 hover 状态分离；预览默认跟随当前明暗模式。
+- 将主题预设和字体选择从系统原生下拉替换为 DeepSeek Harness 菜单样式。
+
 ## 0.2.0 - 2026-08-21
 
 - 实现 Settings > Pretty 个性化设置页面和中英文界面。

@@ -1,0 +1,9 @@
+/* DSH currently maps both hover and selected session rows to the hover token.
+   Keep hover neutral, but let an enabled Pretty theme provide its own accent-aware
+   selected fill. The fallback preserves native DSH behavior when Pretty is off. */
+:global([role="treeitem"][aria-selected="true"]) {
+  background: var(
+    --dsh-pretty-session-row-selected,
+    var(--dsw-alias-interactive-bg-hover)
+  );
+}

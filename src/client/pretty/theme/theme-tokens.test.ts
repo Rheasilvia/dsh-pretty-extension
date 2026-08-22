@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { DEFAULT_PRETTY_THEME } from '../../../settings/pretty-settings.ts'
 import { UI_FONT_STACKS } from './font-stacks.ts'
 import { applyPreset, BUILTIN_PRESET_IDS } from './theme-presets.ts'
-import { deriveThemeTokens } from './theme-tokens.ts'
+import {
+  derivePreviewColors, deriveThemeTokens, PRETTY_SESSION_ROW_SELECTED_TOKEN,
+} from './theme-tokens.ts'
 
 describe('Pretty theme domain', () => {
   it.each(BUILTIN_PRESET_IDS)('derives paired tokens for %s', id => {
@@ -21,5 +23,17 @@ describe('Pretty theme domain', () => {
     const tokens = deriveThemeTokens({ ...DEFAULT_PRETTY_THEME, translucentSidebar: true })
     expect(tokens['--dsw-font-family']!.light).toBe(UI_FONT_STACKS.system)
     expect(tokens['--dsw-specific-sidebar-fill']!.dark).toBe('rgba(19, 19, 19, 0.82)')
+  })
+
+  it('keeps hover neutral and shares the accent selected fill with the preview', () => {
+    const theme = { ...DEFAULT_PRETTY_THEME, contrast: 72 }
+    const tokens = deriveThemeTokens(theme)
+    const preview = derivePreviewColors(theme.dark, theme)
+    expect(tokens['--dsw-alias-interactive-bg-hover']!.dark).toBe(preview.sidebarItemHover)
+    expect(tokens['--dsw-specific-sidebar-nav-item-hover']!.dark).toBe(preview.sidebarItemHover)
+    expect(tokens['--dsw-specific-sidebar-nav-item-active']!.dark).toBe(preview.sidebarItemSelected)
+    expect(tokens[PRETTY_SESSION_ROW_SELECTED_TOKEN]!.dark).toBe(preview.sidebarItemSelected)
+    expect(preview.sidebarItemSelected).not.toBe(preview.sidebarItemHover)
+    expect(tokens['--dsw-specific-sidebar-fill']!.dark).toBe(preview.sidebar)
   })
 })
