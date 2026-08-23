@@ -1,134 +1,203 @@
-# dsh-pretty-extension
+<div align="center">
 
-面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web UI 的个性化主题插件。它在 **Settings > Pretty** 提供双模式配色、字体和界面层次设置，通过 DSH 公开的 settings/theme/slot 服务生效，不修改 DeepSeek Harness 源码。
+# DSH Pretty Extension
 
-## 功能
+**A polished theme editor for the DeepSeek Harness Web UI.**
 
-- 分别编辑浅色和深色调色板；外观模式仍由 **General > Appearance** 管理。
-- 与 Codex 当前主题目录对齐的 28 套预设：Ayu、Catppuccin、Absolutely、Codex、Dracula、Everforest、GitHub、Gruvbox、Linear、Lobster、Material、Matrix、Monokai、Night Owl、Nord、Notion、Oscurange、One、Proof、Raycast、Rose Pine、Sentry、Solarized、Tokyo Night、Temple、Vercel、VS Code Plus 和 Xcode。
-- 除内置界面/代码字体栈外，可按需读取 macOS Font Book 的完整字体 family 清单，并将任意本机字体分别用于界面或代码。
-- 半透明侧栏使用 82% alpha；界面层次强度只影响表面、边框、次级文字和 hover 层次。
-- 配色即时预览，点击“保存并应用”后才持久化；放弃更改或离开页面会恢复已保存主题。
-- Pretty 关闭时锁定个性化控件并显示“启用并预览”，避免将“配置已保存”误解为“主题已启用”。
-- 前景对比度低于 WCAG 4.5:1 时，保留背景并将前景向黑/白做最小幅度修正。
-- 外部修改 `settings.yaml` 时使用 revision 防止草稿覆盖新配置。
-- 远程浏览器的 memory settings 自动进入只读状态；loopback 浏览器可以保存。
-- 中英文界面、键盘操作、可见焦点、错误关联、live region 和 reduced-motion 支持。
+Customize colors, typography, and interface depth from a native-looking **Settings → Pretty** page.
 
-默认 `enabled: false`。仅安装插件不会改变 DSH 现有界面，也不会主动写入 `settings.yaml`。
+[![GitHub stars](https://img.shields.io/github/stars/Rheasilvia/dsh-pretty-extension?style=flat-square)](https://github.com/Rheasilvia/dsh-pretty-extension/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/Rheasilvia/dsh-pretty-extension?style=flat-square)](https://github.com/Rheasilvia/dsh-pretty-extension/issues)
+[![License](https://img.shields.io/github/license/Rheasilvia/dsh-pretty-extension?style=flat-square)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/DeepSeek%20Harness-plugin-4f7cff?style=flat-square)](https://github.com/topics/dsh-plugin)
 
-## 开发期安装（推荐）
+[Features](#features) · [Installation](#installation) · [Usage](#usage) · [Development](#development) · [Contributing](#contributing)
 
-开发时使用 `link:`，源码修改后只需重新构建并重启 DSH，不必反复从 GitHub 下载：
+</div>
 
-```sh
-cd /Users/chenmengjie/Documents/Repos/dsh-pretty-extension
-pnpm install
-pnpm build
-dsh plugin --profile web add link:/Users/chenmengjie/Documents/Repos/dsh-pretty-extension
-```
+<p align="center">
+  <img src="docs/images/pretty-settings.png" alt="Pretty settings in DeepSeek Harness, showing the theme preview, preset picker, and custom palette controls" width="1100" />
+</p>
 
-之后启动或重启 Web profile：
+DSH Pretty Extension adds a complete theme editor to [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness). Start from one of 28 presets or build your own light and dark palettes, preview every change in context, and save the result through DSH's settings system.
 
-```sh
-dsh --profile web
-```
+The extension uses the public DSH plugin, settings, slot, and theme APIs. It does not fork or patch the DeepSeek Harness source tree, and it stays disabled until you explicitly enable it.
 
-打开 **Settings > Pretty**，先点击“启用并预览”或打开“启用 Pretty 主题”开关，再进行个性化配置。开发中可另开终端运行 `pnpm watch`，但 Host/profile 重新加载仍以重启 DSH 最可靠。
+## Features
 
-字体列表通过浏览器的 Local Font Access API 读取。首次点击“加载系统字体”时浏览器会请求本机字体权限；这是浏览器隐私边界，插件不会绕过授权。Chromium 系浏览器在 loopback/安全上下文中支持该能力；不支持或拒绝授权时仍可使用内置字体栈。
+| Capability | What it adds |
+| --- | --- |
+| **28 theme presets** | Ayu, Catppuccin, Codex, Dracula, GitHub, Nord, Proof, Tokyo Night, Vercel, Xcode, and more. |
+| **Independent light and dark palettes** | Customize accent, background, foreground, and sidebar colors for each appearance mode. |
+| **Live preview** | See the sidebar, conversation surface, and selected-session state before saving. |
+| **Typography controls** | Choose separate UI and code fonts, including local macOS Font Book families when permitted by the browser. |
+| **Interface depth** | Tune surfaces, borders, secondary text, hover states, and an optional translucent sidebar rendered at 82% opacity. |
+| **Accessible color correction** | Low-contrast foreground colors are minimally adjusted to preserve a WCAG 4.5:1 text contrast ratio. |
+| **Native DSH integration** | Uses DSH menus, semantic theme tokens, settings persistence, revision protection, and English/Chinese UI copy. |
 
-卸载本地链接：
+## Installation
 
-```sh
-dsh plugin --profile web remove dsh-pretty-extension
-```
+### Requirements
 
-## 从 GitHub 安装
+- A working [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) installation with the `web` profile.
+- `pnpm` available on `PATH`; `dsh plugin` uses pnpm to manage profile dependencies.
 
-DSH 支持直接安装 GitHub 仓库。建议固定 commit，避免后续推送悄悄改变已安装代码：
+### Install from GitHub
+
+Stop any running `dsh web` process, then install the plugin into the Web profile:
 
 ```sh
-dsh plugin --profile web add github:Rheasilvia/dsh-pretty-extension#<commit-sha>
+dsh plugin --profile web add github:Rheasilvia/dsh-pretty-extension
 ```
 
-Git 安装获取的是源码，pnpm 会通过本项目的 `prepare` 脚本生成 `lib/`。pnpm 10+ 首次可能阻止该构建；按终端提示，在 DSH web profile 的 `pnpm-workspace.yaml` 中加入：
+Start DSH Web again:
+
+```sh
+dsh web
+```
+
+> [!IMPORTANT]
+> `dsh plugin add` updates the profile on disk. It does not hot-reload the bundle set of an already running DSH process, so a restart is required after installing, updating, or removing the plugin.
+
+<details>
+<summary><strong>pnpm 10+: allow the Git build script if installation is blocked</strong></summary>
+
+Git installations fetch source code and run this repository's `prepare` script to build `lib/`. pnpm 10 and newer may block that script on the first attempt.
+
+If pnpm reports an `allowBuilds` error, edit:
+
+```text
+~/.dsh/profiles/web/pnpm-workspace.yaml
+```
+
+Merge the following entry into the existing configuration without replacing other keys:
 
 ```yaml
 allowBuilds:
   dsh-pretty-extension: true
 ```
 
-然后重新执行安装命令。开发阶段仍推荐 `link:`：反馈更快、不会受远程 commit 与安装期构建影响；准备给其他机器试用时再用固定 commit 的 GitHub 安装。
+Run the same `dsh plugin ... add` command again afterward. This permission allows the repository's install-time build script to execute on your machine, outside the agent sandbox. Only grant it to source you trust.
 
-## 配置持久化
+</details>
 
-设置由 DSH file settings provider 保存到 `$DSH_HOME/settings.yaml`（默认 `~/.dsh/settings.yaml`）。一次保存只写完整的 `ui-pretty.theme` 字段：
-
-```yaml
-ui-pretty:
-  theme:
-    enabled: true
-    preset: custom
-    light:
-      accent: "#2563EB"
-      background: "#F7F9FC"
-      foreground: "#172033"
-      sidebar: "#ECF2FA"
-    dark:
-      accent: "#60A5FA"
-      background: "#0F172A"
-      foreground: "#E7EDF8"
-      sidebar: "#131D33"
-    uiFont: system
-    codeFont: "local:Fira Code"
-    translucentSidebar: false
-    contrast: 60
-```
-
-本机字体使用稳定的 `local:<Font Book family>` 标识，例如 `local:Avenir Next`。插件只保存 family 名称，不保存字体文件。“恢复默认”会 unset `ui-pretty.theme`，让 DSH 原始 theme tokens 重新生效，不会改动其他 namespace。
-
-## 开发与验证
-
-要求 Node.js `^22.19.0 || >=24.0.0` 和 pnpm 11：
+For a reproducible installation, pin the GitHub dependency to a reviewed commit:
 
 ```sh
+dsh plugin --profile web add github:Rheasilvia/dsh-pretty-extension#YOUR_COMMIT_SHA
+```
+
+### Link a local checkout
+
+Use a linked checkout for development or testing:
+
+```sh
+git clone https://github.com/Rheasilvia/dsh-pretty-extension.git
+cd dsh-pretty-extension
+corepack enable
 pnpm install
+pnpm build
+dsh plugin --profile web add link:.
+dsh web
+```
+
+After editing the source, run `pnpm build` and restart `dsh web`. You do not need to add the linked plugin again.
+
+## Usage
+
+1. Start DSH with `dsh web` and open its loopback URL, normally `http://127.0.0.1:3080`.
+2. Open **Settings → Pretty**.
+3. Turn on **Enable Pretty theme**.
+4. Select the light or dark palette, then choose a preset or customize its colors, fonts, and interface effects.
+5. Review the live preview and click **Save and apply**.
+
+> [!NOTE]
+> The Light and Dark buttons in Pretty select the palette you are editing. The active application appearance is still controlled by **Settings → General → Appearance**.
+
+The plugin is disabled by default. Installing it alone does not change the DSH interface or write theme settings.
+
+## Updating
+
+For an unpinned GitHub installation, stop DSH Web and run:
+
+```sh
+dsh plugin --profile web update dsh-pretty-extension
+dsh web
+```
+
+If you pinned a commit, install the new reviewed commit SHA explicitly instead.
+
+## Uninstalling
+
+Stop DSH Web, remove the plugin, and restart the profile:
+
+```sh
+dsh plugin --profile web remove dsh-pretty-extension
+dsh web
+```
+
+## Troubleshooting
+
+| Problem | What to do |
+| --- | --- |
+| **Pretty does not appear in Settings** | Confirm the plugin was added with `--profile web`, then fully stop and restart `dsh web`. |
+| **“Pretty is read-only in this browser”** | Open DSH through `127.0.0.1`, `localhost`, or another loopback address. Remote browser sessions intentionally use memory settings and cannot persist Pretty changes. |
+| **The Host settings provider is unavailable** | Use the standard Web profile and restart it after installing or rebuilding the plugin. |
+| **pnpm blocked the build script** | Add `dsh-pretty-extension: true` to the Web profile's `allowBuilds` map, then retry the install command. |
+| **Local fonts are unavailable** | Local Font Access requires browser support, a loopback or secure context, and explicit permission. Built-in font stacks remain available. |
+
+## Configuration and privacy
+
+Pretty settings are stored by the DSH file settings provider under the `ui-pretty.theme` namespace in `$DSH_HOME/settings.yaml` (normally `~/.dsh/settings.yaml`). **Restore defaults** removes that namespace override and lets the original DSH theme tokens take effect again.
+
+Local Font Access is requested only after you click **Load system fonts**. The plugin stores the selected font family name; it does not copy or upload font files.
+
+## Development
+
+Local development requires Node.js `^22.19.0 || >=24.0.0` and pnpm 11.
+
+| Command | Description |
+| --- | --- |
+| `pnpm typecheck` | Run the TypeScript type checker. |
+| `pnpm test` | Run domain, controller, component, accessibility, and settings integration tests. |
+| `pnpm build` | Build the Host entry, browser client bundle, declarations, and inline CSS Modules. |
+| `pnpm check` | Run type checking, tests, and a production build. |
+| `pnpm watch` | Rebuild when source files change. |
+| `pnpm pack --dry-run` | Inspect the publishable package contents. |
+
+### Project structure
+
+```text
+src/
+├── index.ts                         # Host composition root and settings schema
+├── settings/pretty-settings.ts      # Persistent configuration contract
+└── client/
+    ├── index.ts                     # Browser composition root
+    ├── locales.ts                   # English and Chinese UI copy
+    └── pretty/
+        ├── PrettySection/           # Settings page and state branches
+        ├── components/              # UI components and CSS Modules
+        ├── state/                   # Settings adapters, store, and controller
+        └── theme/                   # Presets, font catalog, and token derivation
+```
+
+The Host registers the settings schema. The browser client injects the Pretty page into DSH Settings and applies colors and fonts through an owned theme-token override. Adapters keep DSH services outside the UI and theme domain logic.
+
+## Contributing
+
+Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and run the verification gates before opening a PR:
+
+```sh
 pnpm check
 pnpm pack --dry-run
 ```
 
-常用命令：
+## License
 
-```sh
-pnpm typecheck   # TypeScript 严格类型检查
-pnpm test        # 领域、控制器、组件、a11y、YAML 集成测试
-pnpm build       # Host ESM、动态 client.js、声明与内联 CSS Modules
-pnpm watch       # 监听并重建
-```
+Released under the [MIT License](LICENSE).
 
-## 工程结构
+---
 
-```text
-src/
-├── index.ts                         # Host composition root / schema 注册
-├── settings/pretty-settings.ts      # 配置契约、默认值与 schema
-└── client/
-    ├── index.ts                     # Browser composition root
-    ├── locales.ts                   # zh/en 完整键集合
-    └── pretty/
-        ├── PrettySection/           # 页面容器和状态分支
-        ├── components/              # 共置的展示组件与 CSS Modules
-        ├── state/                   # settings adapter、store、controller
-        └── theme/                   # theme adapter、28 套预设、Font Book 目录与 token 纯函数
-build/inline-css-modules.ts          # CSS Modules 编译并嵌入动态 client.js
-tests/integration/                   # 真实 settings.yaml 持久化测试
-```
-
-架构边界：两个 `index.ts` 只组装依赖；组件不访问 Cordis/DSH context；设置与主题服务通过 adapter 隔离；颜色、预设、字体和 token 派生保持无 React、无浏览器副作用。
-
-项目初始化与动态加载方式参考 [dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui)，具体运行契约以 DeepSeek Harness `0.1.0-rc.8` client/settings API 为准。
-
-## 许可证
-
-[MIT](LICENSE)
+<p align="center">
+  A community-maintained plugin for DeepSeek Harness. This project is not affiliated with or endorsed by DeepSeek AI.
+</p>

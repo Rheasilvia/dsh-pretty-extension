@@ -41,6 +41,7 @@
   },
   "files": [
     "lib",
+    "docs/images",
     "cordis.patch.yml",
     "README.md",
     "CHANGELOG.md",
