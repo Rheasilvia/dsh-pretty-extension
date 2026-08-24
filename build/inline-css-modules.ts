@@ -1,9 +1,16 @@
 import { readFile } from 'node:fs/promises'
 import { basename, dirname, resolve } from 'node:path'
-import { transform } from 'lightningcss'
+import { transform, type CSSModuleExports } from 'lightningcss'
 
 const VIRTUAL_PREFIX = '\0pretty-css:'
 const VIRTUAL_SUFFIX = '.mjs'
+
+export function toSortedClassNames(moduleExports: CSSModuleExports | void): Record<string, string> {
+  const classes: Record<string, string> = {}
+  const entries = moduleExports ?? {}
+  for (const local of Object.keys(entries).sort()) classes[local] = entries[local]!.name
+  return classes
+}
 
 export function inlineCssModules(pluginId: string) {
   return {
@@ -23,8 +30,7 @@ export function inlineCssModules(pluginId: string) {
         cssModules: { pattern: '[hash]_[local]' },
         minify: true,
       })
-      const classes: Record<string, string> = {}
-      for (const [local, value] of Object.entries(result.exports ?? {})) classes[local] = value.name
+      const classes = toSortedClassNames(result.exports)
       const tagId = `${pluginId}/${basename(file)}`
       return [
         `const css = ${JSON.stringify(result.code.toString())};`,

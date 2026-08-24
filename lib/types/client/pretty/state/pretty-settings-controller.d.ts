@@ -1,0 +1,31 @@
+import { type PrettyCodeFontId, type PrettyPalette, type PrettyUiFontId } from '../../../settings/pretty-settings.ts';
+import { type BuiltinPrettyPresetId } from '../theme/theme-presets.ts';
+import type { PrettyThemePort } from '../theme/dsh-theme-adapter.ts';
+import type { PrettySettingsPort } from './dsh-settings-adapter.ts';
+import { type PrettyPageState, type PrettySnapshotStore } from './pretty-settings-store.ts';
+export type PaletteMode = 'light' | 'dark';
+export type PaletteField = keyof PrettyPalette;
+export declare class PrettySettingsController {
+    private readonly settings;
+    private readonly theme;
+    readonly store: PrettySnapshotStore<PrettyPageState>;
+    private readonly unsubscribe;
+    private disposed;
+    constructor(settings: PrettySettingsPort, theme: PrettyThemePort);
+    setEnabled(enabled: boolean): void;
+    selectPreset(id: BuiltinPrettyPresetId): void;
+    updatePalette(mode: PaletteMode, field: PaletteField, color: string): void;
+    setUiFont(uiFont: PrettyUiFontId): void;
+    setCodeFont(codeFont: PrettyCodeFontId): void;
+    setTranslucentSidebar(translucentSidebar: boolean): void;
+    setContrast(contrast: number): void;
+    discard(): void;
+    reloadLatest(): void;
+    save(): Promise<void>;
+    reset(): Promise<void>;
+    dispose(): void;
+    private edit;
+    private adopt;
+    private setReady;
+    private markFailure;
+}

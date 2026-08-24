@@ -34,7 +34,7 @@
   "scripts": {
     "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && tsdown",
     "check": "pnpm run typecheck && pnpm run test && pnpm run build",
-    "prepare": "pnpm run build",
+    "check:dist": "pnpm run build && node scripts/check-dist.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "watch": "tsdown --watch"

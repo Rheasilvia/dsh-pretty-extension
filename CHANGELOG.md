@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- GitHub 安装改为直接使用仓库内预构建的 Host/Client bundles、source maps 和声明文件，并移除安装生命周期脚本；全新 DSH profile 不再需要为 Pretty 配置 `allowBuilds`。
+- 稳定 CSS Modules 导出顺序，并增加生成产物一致性检查和 GitHub Actions 发布门禁。
 - 让 Pretty 预览与真实 Sidebar session selected 状态共用主题 accent 派生的 active fill，并将其与中性 hover 状态分离；预览默认跟随当前明暗模式。
 - 将主题预设和字体选择从系统原生下拉替换为 DeepSeek Harness 菜单样式。
 

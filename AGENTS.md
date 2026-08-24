@@ -32,10 +32,11 @@ All commands run from the repository root with pnpm:
 | `pnpm test` | `vitest run` — domain, controller, component, accessibility, and integration tests. |
 | `pnpm build` | Cleans `lib/`, emits declarations (`tsc -p tsconfig.build.json` → `lib/types`), then bundles host + client with tsdown → `lib/`. |
 | `pnpm check` | The full gate: typecheck + test + build. **Run this before committing.** |
+| `pnpm check:dist` | Rebuilds and checks that the committed `lib/` tree remains clean, including modified, missing, and untracked files. |
 | `pnpm watch` | `tsdown --watch` rebuild on change. |
 | `pnpm pack --dry-run` | Inspect publishable package contents (also part of the PR checklist). |
 
-`pnpm build` is also the `prepare` script, so it runs automatically on `pnpm install` from Git — this is why the README documents the pnpm `allowBuilds` workaround.
+Git installations execute no package lifecycle scripts. The repository carries prebuilt `lib/` artifacts, which must be regenerated locally with `pnpm build` and reviewed with the source changes.
 
 Build output details (see `tsdown.config.ts`):
 
@@ -60,14 +61,17 @@ src/
 tests/
 ├── host.spec.ts                      # Host composition-root contract test (mocked Cordis context)
 ├── client.spec.ts                    # Client composition-root contract test (mocked ClientContext)
+├── build/inline-css-modules.test.ts  # Deterministic CSS Modules build-plugin tests
 ├── integration/settings-file.test.ts # Real FileSettingsProvider + temp settings.yaml round-trip
 └── mocks/ui-primitives.tsx           # Vitest alias for @deepseek-ai/dsh-client-ui-primitives
 build/inline-css-modules.ts           # tsdown plugin that inlines CSS Modules
 scripts/clean.mjs                     # Removes lib/ before a build
+scripts/check-dist.mjs                # Requires generated lib/ to remain Git-clean
+lib/                                  # Committed runtime bundles, maps, and declarations
 cordis.patch.yml                      # DSH bundle patch: inserts plugin id `ui-pretty` into the web profile
 ```
 
-`lib/` is generated build output — gitignored, rebuilt by the `prepare` script on Git installs; never edit it by hand.
+`lib/` is generated and committed build output. Never edit it by hand; regenerate it with `pnpm build` and commit it alongside any source or build-tooling change that affects distribution artifacts.
 
 ## Architecture
 
@@ -103,7 +107,7 @@ Inside the client, DSH services are kept out of the UI/theme domain logic via **
 - `@deepseek-ai/dsh-client-ui-primitives` is aliased to `tests/mocks/ui-primitives.tsx` in `vitest.config.ts` — do not import the real package in tests.
 - Accessibility is tested with `axe-core` inside component tests (see `PrettySection.test.tsx`).
 - The integration test (`tests/integration/settings-file.test.ts`) boots a real Cordis `Context` with `FileSettingsProvider` against a temp `settings.yaml` — it asserts that only the `ui-pretty` namespace is touched. Use real providers, not mocks, when testing persistence behavior.
-- When changing behavior: add/update tests, keep README in sync, and run `pnpm check` plus `pnpm pack --dry-run` before opening a PR.
+- When changing behavior: add/update tests, keep README in sync, run `pnpm check`, commit the regenerated `lib/` with the source change, then run `pnpm check:dist` and `pnpm pack --dry-run` from the clean commit before opening a PR.
 
 ## Security considerations
 
@@ -112,4 +116,4 @@ Inside the client, DSH services are kept out of the UI/theme domain logic via **
 - Local Font Access is requested only on explicit user action ("Load system fonts"); only the font family *name* is persisted, never font files.
 - The plugin must stay inert until the user enables it, and must clean up on unload: theme token overrides are released and all `style[data-plugin="dsh-pretty-extension"]` tags are removed in the dispose effect.
 - Remote browser sessions (non-loopback) are intentionally read-only; do not weaken this guard.
-- The `prepare` build script runs on Git installs outside the agent sandbox — this is a documented, user-consented trust boundary (`allowBuilds` in the DSH profile); do not add other install-time scripts.
+- Git installations must remain free of `prepare`, `prepack`, `install`, and `postinstall` scripts. Runtime bundles, source maps, and declarations are prebuilt, committed, reviewed, and checked by CI instead.
