@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { basename, dirname, resolve } from 'node:path'
+import { basename, dirname, relative, resolve } from 'node:path'
 import { transform, type CSSModuleExports } from 'lightningcss'
 
 const VIRTUAL_PREFIX = '\0pretty-css:'
@@ -12,20 +12,25 @@ export function toSortedClassNames(moduleExports: CSSModuleExports | void): Reco
   return classes
 }
 
+export function toPortableCssFilename(file: string, cwd = process.cwd()): string {
+  return relative(cwd, file).replaceAll('\\', '/')
+}
+
 export function inlineCssModules(pluginId: string) {
   return {
     name: 'pretty-css-modules-inline',
     resolveId(source: string, importer?: string) {
       if (!source.endsWith('.module.css')) return null
-      const file = importer === undefined ? source : resolve(dirname(importer), source)
-      return VIRTUAL_PREFIX + file + VIRTUAL_SUFFIX
+      const file = importer === undefined ? resolve(source) : resolve(dirname(importer), source)
+      return VIRTUAL_PREFIX + toPortableCssFilename(file) + VIRTUAL_SUFFIX
     },
     async load(this: { addWatchFile(file: string): void }, virtualId: string) {
       if (!virtualId.startsWith(VIRTUAL_PREFIX)) return null
-      const file = virtualId.slice(VIRTUAL_PREFIX.length, -VIRTUAL_SUFFIX.length)
+      const filename = virtualId.slice(VIRTUAL_PREFIX.length, -VIRTUAL_SUFFIX.length)
+      const file = resolve(filename)
       this.addWatchFile(file)
       const result = transform({
-        filename: file,
+        filename,
         code: await readFile(file),
         cssModules: { pattern: '[hash]_[local]' },
         minify: true,
