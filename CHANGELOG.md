@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 - 2026-10-08
+
+- 放宽 peer 范围到 `^0.2.0-rc.2`(cordis `^4.0.4`):0.3.0 的 `^0.2.1-alpha.1` 会被 0.2.0-rc.2 运行时的插件兼容门拒绝。已对照 rc.2 发布包的类型声明逐项核实插件使用的 API 面(`configForms`/`ConfigForm.mutate`、`theme.overrideTokens`、`slots`、`locale`、宿主 `settings.configure`、`IconChevronDownOutlineRegular`)在 rc.2 中全部存在;cordis 不被兼容门检查且产物不在运行时 import 它。
+
 ## 0.3.0 - 2026-10-08
 
 - **破坏性**:要求 DeepSeek Harness ≥ 0.2.1-alpha.1(web 与 desktop 同包支持,desktop 渲染层与 web 共用同一插件机制)。

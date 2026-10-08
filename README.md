@@ -39,7 +39,7 @@ The extension uses the public DSH plugin, settings, slot, and theme APIs. It doe
 
 ### Requirements
 
-- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) `0.2.1-alpha.1` or later (Web or Desktop — the same package serves both, since the desktop app embeds the web UI).
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) `0.2.0-rc.2` or later (Web or Desktop — the same package serves both, since the desktop app embeds the web UI).
 - `pnpm` available on `PATH`; `dsh plugin` uses pnpm to manage profile dependencies.
 
 ### Install from GitHub

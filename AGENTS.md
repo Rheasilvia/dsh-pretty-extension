@@ -20,6 +20,7 @@ Key facts:
 - **Host runtime**: `@deepseek-ai/cordis` (DI/plugin framework); the `Config` schema export is the settings contract.
 - **Client runtime**: plain Cordis client plugin (`Context` from `@deepseek-ai/cordis`) plus `dsh-client-*` UI packages (slots/renderer, locale, settings/configForms, theme, primitives).
 - **Types-only devDependencies**: `@deepseek-ai/dsh-client-ui-renderer` supplies the `Context.slots` declaration merge; `@deepseek-ai/dsh-client-store` resolves `ObservableSnapshot`/`SnapshotSelectorHook` referenced by ui-slots' published declarations (upstream does not declare it as a runtime dependency — removing it silently degrades slot hook props to `any`).
+- **DSH version floor**: peers span `^0.2.0-rc.2` (the oldest runtime whose published packages contain every API the plugin uses — verified against the rc.2 type declarations) while devDependencies track the newest line; never use an API introduced after rc.2 without raising the peer floor.
 - **Schema/validation**: `@deepseek-ai/schemastery` (zod-like API, imported as `z`).
 - **Toolchain**: pnpm 11 (via corepack), Node `^22.19.0 || >=24.0.0`, tsdown 0.22 (rolldown-based bundler), lightningcss, Vitest 4, jsdom, @testing-library/react, axe-core.
 
