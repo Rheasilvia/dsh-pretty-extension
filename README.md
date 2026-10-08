@@ -39,7 +39,7 @@ The extension uses the public DSH plugin, settings, slot, and theme APIs. It doe
 
 ### Requirements
 
-- A working [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) installation with the `web` profile.
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) `0.2.1-alpha.1` or later (Web or Desktop — the same package serves both, since the desktop app embeds the web UI).
 - `pnpm` available on `PATH`; `dsh plugin` uses pnpm to manage profile dependencies.
 
 ### Install from GitHub
@@ -54,6 +54,12 @@ Start DSH Web again:
 
 ```sh
 dsh web
+```
+
+For the Desktop app, open DeepSeek Harness Desktop once so it initializes its profile, fully quit it, then install into the `desktop` profile and relaunch the app:
+
+```sh
+dsh plugin --profile desktop add github:Rheasilvia/dsh-pretty-extension
 ```
 
 > [!IMPORTANT]
@@ -128,7 +134,7 @@ dsh web
 
 ## Configuration and privacy
 
-Pretty settings are stored by the DSH file settings provider under the `ui-pretty.theme` namespace in `$DSH_HOME/settings.yaml` (normally `~/.dsh/settings.yaml`). **Restore defaults** removes that namespace override and lets the original DSH theme tokens take effect again.
+Pretty settings persist through DSH's configuration editor into the active profile's `cordis.patch.yml`, keyed by the plugin's `ui-pretty` entry id. Settings written by plugin versions before 0.3.0 in `$DSH_HOME/settings.yaml` are imported once by DSH itself on the first startup after the upgrade. **Restore defaults** clears the `theme` field override and lets the original DSH theme tokens take effect again.
 
 Local Font Access is requested only after you click **Load system fonts**. The plugin stores the selected font family name; it does not copy or upload font files.
 
@@ -160,11 +166,11 @@ src/
     └── pretty/
         ├── PrettySection/           # Settings page and state branches
         ├── components/              # UI components and CSS Modules
-        ├── state/                   # Settings adapters, store, and controller
+        ├── state/                   # Config form adapter, store, and controller
         └── theme/                   # Presets, font catalog, and token derivation
 ```
 
-The Host registers the settings schema. The browser client injects the Pretty page into DSH Settings and applies colors and fonts through an owned theme-token override. Adapters keep DSH services outside the UI and theme domain logic.
+The Host exports the `Config` schema that DSH serves as the `ui-pretty` settings form. The browser client injects the Pretty page into DSH Settings and applies colors and fonts through an owned theme-token override. Adapters keep DSH services outside the UI and theme domain logic.
 
 ## Contributing
 

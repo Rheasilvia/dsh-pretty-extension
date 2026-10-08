@@ -1,7 +1,7 @@
 import { type PrettyCodeFontId, type PrettyPalette, type PrettyUiFontId } from '../../../settings/pretty-settings.ts';
 import { type BuiltinPrettyPresetId } from '../theme/theme-presets.ts';
 import type { PrettyThemePort } from '../theme/dsh-theme-adapter.ts';
-import type { PrettySettingsPort } from './dsh-settings-adapter.ts';
+import type { PrettySettingsPort } from './config-form-adapter.ts';
 import { type PrettyPageState, type PrettySnapshotStore } from './pretty-settings-store.ts';
 export type PaletteMode = 'light' | 'dark';
 export type PaletteField = keyof PrettyPalette;

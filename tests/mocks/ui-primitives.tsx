@@ -45,6 +45,6 @@ export function Menu(props: {
   )
 }
 
-export function IconChevronDownOutline14(props: SVGAttributes<SVGSVGElement>) {
+export function IconChevronDownOutlineRegular(props: SVGAttributes<SVGSVGElement>) {
   return <svg {...props} aria-hidden="true" />
 }

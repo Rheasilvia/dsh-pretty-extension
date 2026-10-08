@@ -33,10 +33,48 @@ export interface PrettySettings {
     theme: PrettyThemeConfig;
 }
 export declare const DEFAULT_PRETTY_THEME: Readonly<PrettyThemeConfig>;
-export declare const PrettySettingsSchema: z<PrettySettings>;
+export declare const PrettySettingsSchema: z<Schemastery.ObjectS<NoInfer<{
+    theme: z<NoInfer<Schemastery.ObjectS<NoInfer<{
+        enabled: z<boolean, boolean, "defined">;
+        preset: z<"ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "defined">;
+        light: z<PrettyPalette, PrettyPalette, "defined">;
+        dark: z<PrettyPalette, PrettyPalette, "defined">;
+        uiFont: z<PrettyUiFontId>;
+        codeFont: z<PrettyCodeFontId>;
+        translucentSidebar: z<boolean, boolean, "defined">;
+        contrast: z<number, number, "defined">;
+    }>>>, NoInfer<Schemastery.ObjectT<NoInfer<{
+        enabled: z<boolean, boolean, "defined">;
+        preset: z<"ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "defined">;
+        light: z<PrettyPalette, PrettyPalette, "defined">;
+        dark: z<PrettyPalette, PrettyPalette, "defined">;
+        uiFont: z<PrettyUiFontId>;
+        codeFont: z<PrettyCodeFontId>;
+        translucentSidebar: z<boolean, boolean, "defined">;
+        contrast: z<number, number, "defined">;
+    }>>>, "volatile-defined">;
+}>>, Schemastery.ObjectT<NoInfer<{
+    theme: z<NoInfer<Schemastery.ObjectS<NoInfer<{
+        enabled: z<boolean, boolean, "defined">;
+        preset: z<"ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "defined">;
+        light: z<PrettyPalette, PrettyPalette, "defined">;
+        dark: z<PrettyPalette, PrettyPalette, "defined">;
+        uiFont: z<PrettyUiFontId>;
+        codeFont: z<PrettyCodeFontId>;
+        translucentSidebar: z<boolean, boolean, "defined">;
+        contrast: z<number, number, "defined">;
+    }>>>, NoInfer<Schemastery.ObjectT<NoInfer<{
+        enabled: z<boolean, boolean, "defined">;
+        preset: z<"ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "ayu" | "catppuccin" | "absolutely" | "codex" | "dracula" | "everforest" | "github" | "gruvbox" | "linear" | "lobster" | "material" | "matrix" | "monokai" | "night-owl" | "nord" | "notion" | "oscurange" | "one" | "proof" | "raycast" | "rose-pine" | "sentry" | "solarized" | "tokyo-night" | "temple" | "vercel" | "vscode-plus" | "xcode" | "ocean" | "forest" | "custom", "defined">;
+        light: z<PrettyPalette, PrettyPalette, "defined">;
+        dark: z<PrettyPalette, PrettyPalette, "defined">;
+        uiFont: z<PrettyUiFontId>;
+        codeFont: z<PrettyCodeFontId>;
+        translucentSidebar: z<boolean, boolean, "defined">;
+        contrast: z<number, number, "defined">;
+    }>>>, "volatile-defined">;
+}>>, "plain">;
 export declare function clonePrettyTheme(theme: PrettyThemeConfig): PrettyThemeConfig;
 export declare function toLocalFontId(family: string): LocalFontId;
 export declare function localFontFamily(id: PrettyUiFontId | PrettyCodeFontId): string | undefined;
 export declare function isLocalFontFamily(family: string): boolean;
-export declare function isPrettyThemeConfig(value: unknown): value is PrettyThemeConfig;
-export declare function decodePrettySettings(value: unknown): PrettySettings | undefined;

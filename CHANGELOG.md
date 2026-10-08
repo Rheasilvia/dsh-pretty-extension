@@ -1,10 +1,18 @@
 # Changelog
 
+## 0.3.0 - 2026-10-08
+
+- **破坏性**:要求 DeepSeek Harness ≥ 0.2.1-alpha.1(web 与 desktop 同包支持,desktop 渲染层与 web 共用同一插件机制)。
+- 适配 DSH 新设置模型:Host 侧改为导出带 `.volatile()` 字段的 `Config` schema(命名空间即 `ui-pretty` 条目 id),设置持久化迁入 profile 的 `cordis.patch.yml`;旧版 `settings.yaml` 中的 `ui-pretty` 设置由 DSH 启动时一次性导入。
+- Client 侧从已删除的 `settingsScope` 迁移到 `ctx.configForms.get('ui-pretty')`;写操作改用带 revision 栅栏的 `mutate`,Host 拒绝映射为冲突、传输失败映射为错误;远程(非 loopback)会话的 memory 只读模式维持不变。
+- 依赖升级:`@deepseek-ai/cordis` ^4.0.5-alpha.1、`@deepseek-ai/schemastery` ^3.18.5-alpha.1、`@deepseek-ai/dsh-client-*` ^0.2.1-alpha.1;移除已删除的 `@deepseek-ai/dsh-client-runtime` 与 `@deepseek-ai/dsh-settings-file`。
+- 跟进 ui-primitives 图标重命名(`IconChevronDownOutline14` → `IconChevronDownOutlineRegular`);抑制 Pretty 条目的自动生成设置表单(自带定制 UI)。
+
 ## Unreleased
 
-- GitHub 安装改为直接使用仓库内预构建的 Host/Client bundles、source maps 和声明文件，并移除安装生命周期脚本；全新 DSH profile 不再需要为 Pretty 配置 `allowBuilds`。
-- 稳定 CSS Modules 导出顺序，并增加生成产物一致性检查和 GitHub Actions 发布门禁。
-- 让 Pretty 预览与真实 Sidebar session selected 状态共用主题 accent 派生的 active fill，并将其与中性 hover 状态分离；预览默认跟随当前明暗模式。
+- GitHub 安装改为直接使用仓库内预构建的 Host/Client bundles、source maps 和声明文件,并移除安装生命周期脚本;全新 DSH profile 不再需要为 Pretty 配置 `allowBuilds`。
+- 稳定 CSS Modules 导出顺序,并增加生成产物一致性检查和 GitHub Actions 发布门禁。
+- 让 Pretty 预览与真实 Sidebar session selected 状态共用主题 accent 派生的 active fill,并将其与中性 hover 状态分离;预览默认跟随当前明暗模式。
 - 将主题预设和字体选择从系统原生下拉替换为 DeepSeek Harness 菜单样式。
 
 ## 0.2.0 - 2026-08-21

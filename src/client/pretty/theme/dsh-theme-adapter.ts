@@ -1,5 +1,5 @@
 import type {} from '@deepseek-ai/dsh-client-ui-theme/client'
-import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import type { Context } from '@deepseek-ai/cordis'
 import type { PrettyThemeConfig } from '../../../settings/pretty-settings.ts'
 import { deriveThemeTokens } from './theme-tokens.ts'
 
@@ -15,7 +15,7 @@ const OVERRIDE_SOURCE = 'dsh-pretty-extension'
 export class DshThemeAdapter implements PrettyThemePort {
   private release: (() => void) | undefined
 
-  constructor(private readonly theme: ClientContext['theme']) {}
+  constructor(private readonly theme: Context['theme']) {}
 
   preview(config: PrettyThemeConfig): void {
     this.replace(config)

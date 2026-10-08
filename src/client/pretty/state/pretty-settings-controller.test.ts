@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { clonePrettyTheme, DEFAULT_PRETTY_THEME, type PrettyThemeConfig } from '../../../settings/pretty-settings.ts'
 import type { PrettyThemePort } from '../theme/dsh-theme-adapter.ts'
-import type { PrettySettingsPort, PrettySettingsSnapshot } from './dsh-settings-adapter.ts'
+import type { PrettySettingsPort, PrettySettingsSnapshot } from './config-form-adapter.ts'
 import { PrettySettingsController } from './pretty-settings-controller.ts'
 
 class FakeSettings implements PrettySettingsPort {

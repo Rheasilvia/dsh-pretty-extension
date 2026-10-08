@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  IconChevronDownOutline14, Menu, type MenuEntry,
+  IconChevronDownOutlineRegular, Menu, type MenuEntry,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import styles from './PrettySelect.module.css'
 
@@ -68,7 +68,7 @@ export function PrettySelect<T extends string>({
           }}
         >
           <span className={styles.value}>{selectedLabel}</span>
-          <IconChevronDownOutline14 className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`} />
+          <IconChevronDownOutlineRegular className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`} />
         </button>
       )}
     />

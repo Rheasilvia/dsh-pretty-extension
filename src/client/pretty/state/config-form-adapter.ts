@@ -1,6 +1,6 @@
 import type {
-  SettingsScope, SettingsScopeSnapshot,
-} from '@deepseek-ai/dsh-client-runtime/client'
+  ConfigForm, ConfigFormSnapshot,
+} from '@deepseek-ai/dsh-client-ui-settings/client'
 import {
   clonePrettyTheme, type PrettySettings, type PrettyThemeConfig,
 } from '../../../settings/pretty-settings.ts'
@@ -21,7 +21,7 @@ export interface PrettySettingsPort {
   resetTheme(expectedRevision: number): Promise<'saved' | 'conflict' | 'error'>
 }
 
-function project(snapshot: SettingsScopeSnapshot<PrettySettings>): PrettySettingsSnapshot {
+function project(snapshot: ConfigFormSnapshot<PrettySettings>): PrettySettingsSnapshot {
   return {
     status: snapshot.status,
     ...(snapshot.value?.theme === undefined ? {} : { theme: clonePrettyTheme(snapshot.value.theme) }),
@@ -32,21 +32,24 @@ function project(snapshot: SettingsScopeSnapshot<PrettySettings>): PrettySetting
   }
 }
 
-export class DshSettingsAdapter implements PrettySettingsPort {
-  constructor(private readonly scope: SettingsScope<PrettySettings>) {}
+export class ConfigFormAdapter implements PrettySettingsPort {
+  constructor(private readonly form: ConfigForm<PrettySettings>) {}
 
   getSnapshot(): PrettySettingsSnapshot {
-    return project(this.scope.getSnapshot())
+    return project(this.form.getSnapshot())
   }
 
   subscribe(listener: () => void): () => void {
-    return this.scope.subscribe(listener)
+    return this.form.subscribe(listener)
   }
 
   async saveTheme(theme: PrettyThemeConfig, expectedRevision: number) {
     try {
-      await this.scope.set('theme', clonePrettyTheme(theme))
-      return this.settlement(expectedRevision, theme, true)
+      const accepted = await this.form.mutate(
+        [{ op: 'set', path: ['theme'], value: clonePrettyTheme(theme) }],
+        expectedRevision,
+      )
+      return accepted ? 'saved' as const : 'conflict' as const
     } catch {
       return 'error' as const
     }
@@ -54,21 +57,10 @@ export class DshSettingsAdapter implements PrettySettingsPort {
 
   async resetTheme(expectedRevision: number) {
     try {
-      await this.scope.unset('theme')
-      const next = this.getSnapshot()
-      if (!next.overridden) return 'saved' as const
-      return next.revision === expectedRevision ? 'error' as const : 'conflict' as const
+      const accepted = await this.form.mutate([{ op: 'unset', path: ['theme'] }], expectedRevision)
+      return accepted ? 'saved' as const : 'conflict' as const
     } catch {
       return 'error' as const
     }
-  }
-
-  private settlement(expectedRevision: number, theme: PrettyThemeConfig, requireOverride: boolean) {
-    const next = this.getSnapshot()
-    if (next.revision === expectedRevision) return 'error' as const
-    if (next.theme !== undefined
-      && JSON.stringify(next.theme) === JSON.stringify(theme)
-      && (!requireOverride || next.overridden)) return 'saved' as const
-    return 'conflict' as const
   }
 }

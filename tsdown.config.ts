@@ -16,7 +16,7 @@ const host: UserConfig = {
   sourcemap: true,
   clean: false,
   deps: {
-    neverBundle: ['@deepseek-ai/cordis', '@deepseek-ai/dsh-settings'],
+    neverBundle: ['@deepseek-ai/cordis'],
   },
   outputOptions: {
     entryFileNames: 'index.js',
@@ -37,7 +37,6 @@ const client: UserConfig = {
   deps: {
     neverBundle: [
       '@deepseek-ai/cordis',
-      '@deepseek-ai/dsh-client-runtime/client',
       '@deepseek-ai/dsh-client-ui-primitives',
       '@deepseek-ai/dsh-client-ui-slots',
       'react',

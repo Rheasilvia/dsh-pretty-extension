@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { clonePrettyTheme, DEFAULT_PRETTY_THEME, type PrettyThemeConfig } from '../../../settings/pretty-settings.ts'
 import { en, type PrettyTranslate } from '../../locales.ts'
 import type { PrettyThemePort } from '../theme/dsh-theme-adapter.ts'
-import type { PrettySettingsPort, PrettySettingsSnapshot } from '../state/dsh-settings-adapter.ts'
+import type { PrettySettingsPort, PrettySettingsSnapshot } from '../state/config-form-adapter.ts'
 import { PrettySettingsController } from '../state/pretty-settings-controller.ts'
 import { PrettySection, type PrettySectionProps } from './PrettySection.tsx'
 

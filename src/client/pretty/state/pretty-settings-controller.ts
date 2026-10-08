@@ -5,7 +5,7 @@ import {
 import { ensureReadableForeground } from '../theme/color-contrast.ts'
 import { applyPreset, type BuiltinPrettyPresetId } from '../theme/theme-presets.ts'
 import type { PrettyThemePort } from '../theme/dsh-theme-adapter.ts'
-import type { PrettySettingsPort, PrettySettingsSnapshot } from './dsh-settings-adapter.ts'
+import type { PrettySettingsPort, PrettySettingsSnapshot } from './config-form-adapter.ts'
 import {
   createPrettySettingsStore, isDirty, type PrettyPageState, type PrettySnapshotStore,
 } from './pretty-settings-store.ts'

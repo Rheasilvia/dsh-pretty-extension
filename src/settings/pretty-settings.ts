@@ -87,7 +87,7 @@ const darkPaletteSchema: z<PrettyPalette> = z.object({
   sidebar: colorSchema.default(codexDark.sidebar),
 })
 
-export const PrettySettingsSchema: z<PrettySettings> = z.object({
+export const PrettySettingsSchema = z.object({
   theme: z.object({
     enabled: z.boolean().default(false),
     preset: z.union([...PRETTY_PRESET_IDS]).default('codex'),
@@ -97,7 +97,7 @@ export const PrettySettingsSchema: z<PrettySettings> = z.object({
     codeFont: z.string().pattern(CODE_FONT_PATTERN).default('system-mono') as z<PrettyCodeFontId>,
     translucentSidebar: z.boolean().default(false),
     contrast: z.number().min(0).max(100).step(1).default(60),
-  }).default(DEFAULT_PRETTY_THEME as PrettyThemeConfig),
+  }).default(DEFAULT_PRETTY_THEME as PrettyThemeConfig).volatile(),
 })
 
 export function clonePrettyTheme(theme: PrettyThemeConfig): PrettyThemeConfig {
@@ -118,39 +118,4 @@ export function localFontFamily(id: PrettyUiFontId | PrettyCodeFontId): string |
 
 export function isLocalFontFamily(family: string): boolean {
   return family.length <= MAX_LOCAL_FONT_FAMILY_LENGTH && LOCAL_FONT_FAMILY_PATTERN.test(family)
-}
-
-function isUiFontId(value: unknown): value is PrettyUiFontId {
-  return typeof value === 'string' && UI_FONT_PATTERN.test(value)
-}
-
-function isCodeFontId(value: unknown): value is PrettyCodeFontId {
-  return typeof value === 'string' && CODE_FONT_PATTERN.test(value)
-}
-
-export function isPrettyThemeConfig(value: unknown): value is PrettyThemeConfig {
-  if (typeof value !== 'object' || value === null) return false
-  const theme = value as Record<string, unknown>
-  const paletteValid = (palette: unknown): palette is PrettyPalette => {
-    if (typeof palette !== 'object' || palette === null) return false
-    const entry = palette as Record<string, unknown>
-    return ['accent', 'background', 'foreground', 'sidebar']
-      .every(key => typeof entry[key] === 'string' && HEX_COLOR_PATTERN.test(entry[key] as string))
-  }
-  return typeof theme.enabled === 'boolean'
-    && PRETTY_PRESET_IDS.includes(theme.preset as PrettyPresetId)
-    && paletteValid(theme.light)
-    && paletteValid(theme.dark)
-    && isUiFontId(theme.uiFont)
-    && isCodeFontId(theme.codeFont)
-    && typeof theme.translucentSidebar === 'boolean'
-    && Number.isInteger(theme.contrast)
-    && (theme.contrast as number) >= 0
-    && (theme.contrast as number) <= 100
-}
-
-export function decodePrettySettings(value: unknown): PrettySettings | undefined {
-  if (typeof value !== 'object' || value === null) return undefined
-  const theme = (value as { theme?: unknown }).theme
-  return isPrettyThemeConfig(theme) ? { theme: clonePrettyTheme(theme) } : undefined
 }
