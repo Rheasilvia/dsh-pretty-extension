@@ -1,6 +1,11 @@
 {
   "name": "dsh-pretty-extension",
-  "version": "0.3.1",
+  "version": "0.3.2",
+  "icon": "docs/images/icon-512.png",
+  "homepage": "https://github.com/Rheasilvia/dsh-pretty-extension#readme",
+  "bugs": {
+    "url": "https://github.com/Rheasilvia/dsh-pretty-extension/issues"
+  },
   "description": "DeepSeek Harness Web UI beautification plugin with a dedicated Pretty settings section.",
   "type": "module",
   "main": "lib/index.js",
@@ -14,6 +19,7 @@
       "types": "./lib/types/client/index.d.ts",
       "default": "./lib/client.js"
     },
+    "./locale/*.json": "./locale/*.json",
     "./package.json": "./package.json"
   },
   "dsh": {
@@ -40,13 +46,18 @@
   "files": [
     "lib",
     "docs/images",
+    "locale",
     "cordis.patch.yml",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
   "engines": {
-    "node": "^22.19.0 || >=24.0.0"
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": "^0.2.0-rc.2"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "packageManager": "pnpm@11.22.0",
   "devDependencies": {
@@ -87,10 +98,15 @@
     "url": "git+https://github.com/Rheasilvia/dsh-pretty-extension.git"
   },
   "keywords": [
+    "deepseek",
     "deepseek-harness",
     "dsh",
+    "dsh-plugin",
     "plugin",
     "web-ui",
-    "theme"
+    "theme",
+    "theme-editor",
+    "themes",
+    "customization"
   ]
 }
