@@ -40,35 +40,57 @@ The extension uses the public DSH plugin, settings, slot, and theme APIs. It doe
 ### Requirements
 
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) `0.2.0-rc.2` or later (Web or Desktop — the same package serves both, since the desktop app embeds the web UI).
-- `pnpm` available on `PATH`; `dsh plugin` uses pnpm to manage profile dependencies.
+- `pnpm` available on `PATH` when installing from the terminal or from the Web UI's **Plugins** page; `dsh plugin` forwards to pnpm. The Desktop app uses the package manager bundled with the app.
 
-### Install from GitHub
+### Install from inside DSH
 
-Stop any running `dsh web` process, then install the plugin into the Web profile:
+DSH Web and Desktop both expose a **Plugins** page, which installs into the profile the UI is running — `web` in a browser, the reserved `desktop` profile in the Desktop app — so no profile name is needed.
+
+1. Open DSH: run `dsh web` and open its loopback URL, or launch DeepSeek Harness Desktop.
+2. Open **Plugins** in the sidebar, choose **Add plugin**, and enter:
+   ```text
+   github:Rheasilvia/dsh-pretty-extension
+   ```
+3. Install the plugin, then choose **Enable now** if the finished install offers it.
+4. If DSH says a restart is required, restart the app or the `dsh web` process and reopen the UI.
+5. Open **Settings → Pretty** and turn on **Enable Pretty theme**.
+
+### Install from the terminal
+
+`dsh plugin --profile <name> <args>` forwards the remaining arguments to pnpm in the profile directory.
+
+#### Web profile
+
+Stop any running `dsh web` process, install the plugin, and start DSH again:
 
 ```sh
 dsh plugin --profile web add github:Rheasilvia/dsh-pretty-extension
-```
-
-Start DSH Web again:
-
-```sh
 dsh web
 ```
 
-For the Desktop app, open DeepSeek Harness Desktop once so it initializes its profile, fully quit it, then install into the `desktop` profile and relaunch the app:
+#### Desktop profile
+
+The `dsh` command installed from npm cannot manage the reserved Desktop profile and exits with:
+
+```text
+error: profile "desktop" is managed exclusively by the Electron application
+```
+
+Install from the **Plugins** page instead. For the terminal, open DeepSeek Harness Desktop once so it initializes its profile, install the `dsh` command shipped with the app (the **Manage dsh Command…** menu item), fully quit the app, then run:
 
 ```sh
 dsh plugin --profile desktop add github:Rheasilvia/dsh-pretty-extension
 ```
 
+Relaunch the app after the command finishes. If another `dsh` installation comes first on `PATH`, the command manager reports it; run the Desktop command by its full path instead.
+
 > [!IMPORTANT]
-> `dsh plugin add` updates the profile on disk. It does not hot-reload the bundle set of an already running DSH process, so a restart is required after installing, updating, or removing the plugin.
+> `dsh plugin add` and the Plugins page update the profile on disk. A running DSH process does not load a newly added bundle, so restart DSH after installing, updating, or removing the plugin (profiles with DSH's HMR enabled apply the change without a restart).
 
 > [!NOTE]
 > The repository ships reviewed, prebuilt Host and client bundles, source maps, and declarations under `lib/`. Git installation does not run plugin lifecycle scripts and does not require a Pretty-specific `allowBuilds` entry.
 
-For a reproducible installation, pin the GitHub dependency to a reviewed commit:
+For a reproducible installation, pin the GitHub dependency to a reviewed commit. The `#<sha>` suffix works in the Plugins page and on the command line:
 
 ```sh
 dsh plugin --profile web add github:Rheasilvia/dsh-pretty-extension#YOUR_COMMIT_SHA
@@ -88,11 +110,11 @@ dsh plugin --profile web add link:.
 dsh web
 ```
 
-After editing the source, run `pnpm build` and restart `dsh web`. You do not need to add the linked plugin again.
+After editing the source, run `pnpm build` and restart `dsh web`. You do not need to add the linked plugin again. For Desktop development, run `dsh plugin --profile desktop add link:.` with the Desktop `dsh` command and relaunch the app.
 
 ## Usage
 
-1. Start DSH with `dsh web` and open its loopback URL, normally `http://127.0.0.1:3080`.
+1. Start DSH Web with `dsh web` and open its loopback URL, normally `http://127.0.0.1:3080`, or launch DeepSeek Harness Desktop.
 2. Open **Settings → Pretty**.
 3. Turn on **Enable Pretty theme**.
 4. Select the light or dark palette, then choose a preset or customize its colors, fonts, and interface effects.
@@ -112,7 +134,7 @@ dsh plugin --profile web update dsh-pretty-extension
 dsh web
 ```
 
-If you pinned a commit, install the new reviewed commit SHA explicitly instead.
+If you pinned a commit, install the new reviewed commit SHA explicitly instead. For a Desktop installation, run `dsh plugin --profile desktop update dsh-pretty-extension` with the Desktop `dsh` command, or remove the plugin and add it again from the **Plugins** page.
 
 ## Uninstalling
 
@@ -123,11 +145,13 @@ dsh plugin --profile web remove dsh-pretty-extension
 dsh web
 ```
 
+For a Desktop installation, run `dsh plugin --profile desktop remove dsh-pretty-extension` with the Desktop `dsh` command, or remove the bundle from the **Plugins** page.
+
 ## Troubleshooting
 
 | Problem | What to do |
 | --- | --- |
-| **Pretty does not appear in Settings** | Confirm the plugin was added with `--profile web`, then fully stop and restart `dsh web`. |
+| **Pretty does not appear in Settings** | Confirm DSH is `0.2.0-rc.2` or later (`dsh --version`), the bundle is installed and enabled in the profile you are running (`web` for `dsh web`, `desktop` for the Desktop app), then fully restart DSH. |
 | **“Pretty is read-only in this browser”** | Open DSH through `127.0.0.1`, `localhost`, or another loopback address. Remote browser sessions intentionally use memory settings and cannot persist Pretty changes. |
 | **The Host settings provider is unavailable** | Use the standard Web profile and restart it after installing or rebuilding the plugin. |
 | **Local fonts are unavailable** | Local Font Access requires browser support, a loopback or secure context, and explicit permission. Built-in font stacks remain available. |
