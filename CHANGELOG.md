@@ -12,12 +12,16 @@
 - 依赖升级:`@deepseek-ai/cordis` ^4.0.5-alpha.1、`@deepseek-ai/schemastery` ^3.18.5-alpha.1、`@deepseek-ai/dsh-client-*` ^0.2.1-alpha.1;移除已删除的 `@deepseek-ai/dsh-client-runtime` 与 `@deepseek-ai/dsh-settings-file`。
 - 跟进 ui-primitives 图标重命名(`IconChevronDownOutline14` → `IconChevronDownOutlineRegular`);抑制 Pretty 条目的自动生成设置表单(自带定制 UI)。
 
-## Unreleased
+## 0.3.2 - 2026-11-01
 
 - GitHub 安装改为直接使用仓库内预构建的 Host/Client bundles、source maps 和声明文件,并移除安装生命周期脚本;全新 DSH profile 不再需要为 Pretty 配置 `allowBuilds`。
 - 稳定 CSS Modules 导出顺序,并增加生成产物一致性检查和 GitHub Actions 发布门禁。
 - 让 Pretty 预览与真实 Sidebar session selected 状态共用主题 accent 派生的 active fill,并将其与中性 hover 状态分离;预览默认跟随当前明暗模式。
 - 将主题预设和字体选择从系统原生下拉替换为 DeepSeek Harness 菜单样式。
+- 发布到 npm:新增 `publishConfig.access: public`、`homepage`、`bugs`、市场图标和 `engines.dsh: ^0.2.0-rc.2`(与 peer 范围一致),并扩充 `keywords`;包名保持 `dsh-pretty-extension`。
+- 新增 512×512 图标与中英文 locale `meta`(标题和描述),供 DSH Plugin Market / Discover 索引读取;`files` 追加 `locale` 以随包发布这些元数据。
+- 新增 tag `v*` 触发的 release workflow:校验 tag 与包版本一致后执行 `pnpm check`、`pnpm check:dist`、`pnpm pack --dry-run`,并以 provenance 发布到 npm。
+- README 补充 npm、Plugin Market 与官方 Discover 的安装说明及发布流程。
 
 ## 0.2.0 - 2026-08-21
 
